@@ -25,9 +25,6 @@ desktop.ini
 .idea/
 .vscode/
 
-# Arquivos estáticos e de uploads
-staticfiles/
-media/
 
 # Docker
 docker-compose.override.yml
