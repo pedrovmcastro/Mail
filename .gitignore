@@ -1,0 +1,34 @@
+# Ambiente virtual
+venv/
+
+# Configurações sensíveis
+.env
+
+# Cache do Python e do Django
+*.pyc
+__pycache__/
+
+# Banco de dados local
+db.sqlite3
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor de texto
+.idea/
+.vscode/
+
+# Arquivos estáticos e de uploads
+staticfiles/
+media/
+
+# Docker
+docker-compose.override.yml
+*.pid
