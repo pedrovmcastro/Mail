@@ -10,7 +10,7 @@ JavaScript application for an email client that makes API calls to send and rece
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/pedrovmcastro/mail.git
+    git clone https://github.com/pedrovmcastro/Mail.git
     ```
 2. Create and activate the virtual environment:
     ```bash
