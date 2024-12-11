@@ -73,36 +73,36 @@ function load_mailbox(mailbox) {
       const element = document.createElement('div');
 
       if (mailbox === 'sent') {
-        element.innerHTML = 
-        `<div>
-          <strong>To: ${email['recipients']}</strong> `;
+        element.innerHTML = `
+          <div class="email-row">
+            <div class="email-info">
+              <strong>To: ${email['recipients']}</strong> ${email['subject']}
+            </div>
+            <div class="email-timestamp text-muted">
+              ${email['timestamp']}
+            </div>
+          </div>`;
       } else {
-        element.innerHTML =
-        `<div>
-          <strong>${email['sender']}</strong> `;
+        element.innerHTML += `
+          <div class="email-row">
+            <div class="email-info">
+              <strong>${email['sender']}</strong> ${email['subject']}
+            </div>
+            <div class="email-timestamp text-muted">
+              ${email['timestamp']}
+            </div>
+          </div>`;
       }
 
-      element.innerHTML +=
-          `${email['subject']}
-        </div>
-        <div class="text-muted">
-          ${email['timestamp']}
-        </div>`
-
-      element.classList.add('email-item');
-
-      if (email['read'] === false) {
-        element.style.backgroundColor = 'white';
-      } else {
-        element.style.backgroundColor = 'lightgray';
+      if (email['read'] === true && mailbox === 'inbox') {
+        element.classList.add('email-row-read');
       }
-
+     
       element.addEventListener('click', () => load_email(email['id']));
 
       document.querySelector('#emails-view').append(element);
-
-    })
-  })
+    });
+  });
 }
 
 function load_email(email_id) {

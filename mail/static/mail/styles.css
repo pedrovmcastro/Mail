@@ -2,13 +2,42 @@ textarea {
     min-height: 400px;
 }
 
-email-item {
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-}
-
 p {
     line-height: 0.75;
 }
 
+.email-row {
+    display: flex;
+    justify-content: space-between; /* Alinha os itens com espaço entre eles */
+    align-items: center; /* Centraliza verticalmente os itens */
+    padding: 10px; /* Espaçamento interno para melhor visualização */
+    cursor: pointer;
+    border: 1px solid transparent; /* Borda inicial transparente */
+    border-top: 1px solid rgba(0, 0, 0, 0.25); /* Borda inferior com 75% de transparência */
+    transition: background-color 0.3s ease, border 0.3s ease; /* Transição suave para fundo e borda */
+}
+
+.email-row:hover {
+    background-color: #f4f4f4; /* Cor de fundo quando passar o mouse */
+    border: 1px solid #ccc; /* Cor da borda no hover */
+    border-top: 1px solid rgba(0, 0, 0, 0.25); /* Borda inferior com 75% de transparência */
+}
+
+.email-row:active {
+    background-color: #e0e0e0; /* Cor de fundo mais escura quando clicar */
+}
+
+.email-row-read {
+    background-color: #e7e7e7;
+    transition: background-color 0.3s ease, border 0.3s ease; /* Transição suave para fundo e borda */
+}
+  
+.email-info {
+    display: flex;
+    gap: 10px; /* Espaço entre o emissário e o assunto */
+    flex-wrap: nowrap; /* Garante que o texto fique em uma linha só */
+}
+
+.email-timestamp {
+    color: #888;
+}
