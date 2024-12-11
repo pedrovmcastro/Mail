@@ -47,6 +47,7 @@ function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -59,6 +60,7 @@ function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
@@ -98,7 +100,44 @@ function load_mailbox(mailbox) {
       element.addEventListener('click', () => load_email(email['id']));
 
       document.querySelector('#emails-view').append(element);
-      
+
     })
   })
+}
+
+function load_email(email_id) {
+  
+  // Show the email and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'block';
+  document.querySelector('#compose-view').style.display = 'none';
+
+  fetch(`/emails/${email_id}`)
+  .then(response => response.json())
+  .then(email => {
+    document.querySelector('#email-view').innerHTML = '';
+
+    const element = document.createElement('div');
+
+    element.innerHTML = 
+     `<p><strong>From:</strong> ${email['sender']}</p>
+      <p><strong>To:</strong> ${email['recipients']}</p>
+      <p><strong>Subject:</strong> ${email['subject']}</p>
+      <p><strong>Timestamp:</strong> ${email['timestamp']}</p>
+      <button class="btn btn-sm btn-outline-primary" id="reply">Reply</button>
+      <hr>
+      <p>${email['body']}</p>
+     `
+
+    document.querySelector('#email-view').append(element);
+
+    fetch(`/emails/${email_id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        read: true
+      })
+    });
+
+  });
+
 }

@@ -7,3 +7,8 @@ email-item {
     justify-content: space-between;
     cursor: pointer;
 }
+
+p {
+    line-height: 0.75;
+}
+
