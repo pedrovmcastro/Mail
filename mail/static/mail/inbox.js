@@ -28,12 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         alert('Email sent sucessfully!');
       }
+      load_mailbox('sent');
     })
     .catch(error => {
       alert('An error occurred while sending the email');
     });
-
-    load_mailbox('sent');
 
     event.preventDefault();
     return false;
@@ -56,6 +55,7 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
@@ -76,37 +76,38 @@ function load_mailbox(mailbox) {
         element.innerHTML = `
           <div class="email-row">
             <div class="email-info">
-              <strong>To: ${email['recipients']}</strong> ${email['subject']}
+              <strong>To: ${email.recipients}</strong> ${email.subject}
             </div>
             <div class="email-timestamp text-muted">
-              ${email['timestamp']}
+              ${email.timestamp}
             </div>
           </div>`;
       } else {
         element.innerHTML += `
           <div class="email-row">
             <div class="email-info">
-              <strong>${email['sender']}</strong> ${email['subject']}
+              <strong>${email.sender}</strong> ${email.subject}
             </div>
             <div class="email-timestamp text-muted">
-              ${email['timestamp']}
+              ${email.timestamp}
             </div>
           </div>`;
       }
 
-      if (email['read'] === true && mailbox === 'inbox') {
+      if (email.read === true && mailbox === 'inbox') {
         element.classList.add('email-row-read');
         //element.className = 'email-row-read';
       }
      
-      element.addEventListener('click', () => load_email(email['id']));
+      element.addEventListener('click', () => load_email(email.id, mailbox));
 
       document.querySelector('#emails-view').append(element);
     });
   });
 }
 
-function load_email(email_id) {
+
+function load_email(email_id, mailbox) {
   
   // Show the email and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -120,16 +121,16 @@ function load_email(email_id) {
 
     // Populate email view
     element.innerHTML = 
-     `<p><strong>From:</strong> ${email['sender']}</p>
-      <p><strong>To:</strong> ${email['recipients']}</p>
-      <p><strong>Subject:</strong> ${email['subject']}</p>
-      <p><strong>Timestamp:</strong> ${email['timestamp']}</p>
+     `<p><strong>From:</strong> ${email.sender}</p>
+      <p><strong>To:</strong> ${email.recipients}</p>
+      <p><strong>Subject:</strong> ${email.subject}</p>
+      <p><strong>Timestamp:</strong> ${email.timestamp}</p>
       <hr>
-      <p>${email['body']}</p>
+      <p>${email.body}</p>
      `;
 
     // Change to read
-    if(!email['read']) {
+    if(!email.read) {
       fetch(`/emails/${email_id}`, {
         method: 'PUT',
         body: JSON.stringify({
@@ -138,24 +139,40 @@ function load_email(email_id) {
       });
     }
 
-    // Archive/Unarchive logic
-    const archive_btn = document.createElement('button');
+    // Create a container for buttons
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'buttonContainer';
 
-    if (!email['archived']) {
-      archive_btn.innerHTML = 'Archive';
-      archive_btn.className = 'btn btn-sm btn-outline-primary';
-    } else {
-      archive_btn.innerHTML = 'Unarchive';
-      archive_btn.className = 'btn btn-sm btn-outline-danger';
+    // Archive/Unarchive logic
+    if (mailbox !== 'sent') {
+      const archive_btn = document.createElement('button');
+      archive_btn.innerHTML = email.archived ? "Unarchive" : "Archive";
+      archive_btn.className = email.archived ? "btn btn-sm btn-outline-danger" : "btn btn-sm btn-outline-success";
+
+      archive_btn.addEventListener('click', () => toogle_archive(email.id, email.archived));
+
+      buttonContainer.appendChild(archive_btn);
+    }
+    
+    // Reply
+    if (mailbox !== 'sent') {
+      const reply_btn = document.createElement('button');
+      reply_btn.innerHTML = 'Reply';
+      reply_btn.className = 'btn btn-sm btn-outline-primary';
+
+      reply_btn.addEventListener('click', () => reply(email));
+
+      buttonContainer.appendChild(reply_btn);
     }
 
-    element.append(archive_btn);
-
-    archive_btn.addEventListener('click', () => toogle_archive(email['id'], email['archived']));
+    // Append the button container to the email view
+    element.appendChild(buttonContainer);
+    
 
   });
 
 }
+
 
 function toogle_archive(id, archived) {
   fetch(`/emails/${id}`, {
@@ -165,6 +182,20 @@ function toogle_archive(id, archived) {
     })
   })
   .then(() => {
-    load_email(id);
+    load_mailbox('inbox');
   });
+}
+
+
+function reply(email) {
+  document.querySelector('#compose-view').style.display = 'block';
+
+  // Pre-fill the composition fields
+  document.querySelector('#compose-recipients').value = `${email.sender}`;
+  document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+  document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote:\n${email.body}\n\n`;
+
+  // Focus on body field
+  document.querySelector('#compose-body').focus();
+
 }

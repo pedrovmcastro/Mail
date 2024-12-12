@@ -11,13 +11,13 @@ p {
     justify-content: space-between; /* Alinha os itens com espaço entre eles */
     align-items: center; /* Centraliza verticalmente os itens */
     padding: 10px; /* Espaçamento interno para melhor visualização */
-    cursor: pointer;
     border: 1px solid rgba(0, 0, 0, 0.25); /* Borda inferior com 75% de transparência */
     transition: background-color 0.3s ease, border 0.3s ease; /* Transição suave para fundo e borda */
 }
 
 .email-row:hover {
     background-color: #f4f4f4; /* Cor de fundo quando passar o mouse */
+    cursor: pointer;
 }
 
 .email-row:active {
@@ -29,7 +29,7 @@ p {
     transition: background-color 0.3s ease, border 0.3s ease; /* Transição suave para fundo e borda */
 }
   
-.email-info {
+.email-info, .buttonContainer {
     display: flex;
     gap: 10px; /* Espaço entre o emissário e o assunto */
     flex-wrap: nowrap; /* Garante que o texto fique em uma linha só */
@@ -37,4 +37,8 @@ p {
 
 .email-timestamp {
     color: #888;
+}
+
+.buttonContainer {
+    margin-bottom: 20px;
 }
