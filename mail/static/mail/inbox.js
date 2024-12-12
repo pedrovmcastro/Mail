@@ -96,6 +96,7 @@ function load_mailbox(mailbox) {
 
       if (email['read'] === true && mailbox === 'inbox') {
         element.classList.add('email-row-read');
+        //element.className = 'email-row-read';
       }
      
       element.addEventListener('click', () => load_email(email['id']));
@@ -115,29 +116,55 @@ function load_email(email_id) {
   fetch(`/emails/${email_id}`)
   .then(response => response.json())
   .then(email => {
-    document.querySelector('#email-view').innerHTML = '';
+    const element = document.querySelector('#email-view');
 
-    const element = document.createElement('div');
-
+    // Populate email view
     element.innerHTML = 
      `<p><strong>From:</strong> ${email['sender']}</p>
       <p><strong>To:</strong> ${email['recipients']}</p>
       <p><strong>Subject:</strong> ${email['subject']}</p>
       <p><strong>Timestamp:</strong> ${email['timestamp']}</p>
-      <button class="btn btn-sm btn-outline-primary" id="reply">Reply</button>
       <hr>
       <p>${email['body']}</p>
-     `
+     `;
 
-    document.querySelector('#email-view').append(element);
+    // Change to read
+    if(!email['read']) {
+      fetch(`/emails/${email_id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          read: true
+        })
+      });
+    }
 
-    fetch(`/emails/${email_id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        read: true
-      })
-    });
+    // Archive/Unarchive logic
+    const archive_btn = document.createElement('button');
+
+    if (!email['archived']) {
+      archive_btn.innerHTML = 'Archive';
+      archive_btn.className = 'btn btn-sm btn-outline-primary';
+    } else {
+      archive_btn.innerHTML = 'Unarchive';
+      archive_btn.className = 'btn btn-sm btn-outline-danger';
+    }
+
+    element.append(archive_btn);
+
+    archive_btn.addEventListener('click', () => toogle_archive(email['id'], email['archived']));
 
   });
 
+}
+
+function toogle_archive(id, archived) {
+  fetch(`/emails/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      archived: !archived
+    })
+  })
+  .then(() => {
+    load_email(id);
+  });
 }
